@@ -1,0 +1,103 @@
+#include <Adafruit_SSD1306.h>
+#include <splash.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SPITFT.h>
+#include <Adafruit_SPITFT_Macros.h>
+#include <gfxfont.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_IS31FL3731.h>
+#include <Adafruit_Circuit_Playground.h>
+#include <Adafruit_CircuitPlayground.h>
+#include "HX711.h"
+
+HX711 scale(A2,A3);
+Adafruit_SSD1306 display = Adafruit_SSD1306(128, 32, &Wire);
+float RawValue=0.00;
+float CalibratingValue=0.00;
+int range=1000;
+float data=0;
+float roundedData=0:
+float printData=0;
+
+void setup() {
+  Serial.begin(9600);
+  display.begin();
+  display.setTextColor(10);
+  pinMode(CPLAY_LEFTBUTTON, INPUT_PULLDOWN);
+  pinMode(CPLAY_RIGHTBUTTON, INPUT_PULLDOWN);
+}
+
+void loop() {
+	checkButtons;
+	Serial.println(getRoundedData);
+	printDisplay(getRoundedData);
+	delay(100);
+  }
+ 
+void calibrate() 					{
+	CalibratingValue=scale.read_average(20)/range;
+	Serial.println("calibrated");
+	delay(500);
+}
+void changeRange() 					{
+	if (range==1000)
+    {
+		range=100;
+		Serial.println("Newton");
+		calibrate();
+    }
+    else
+    {
+		range=1000;
+		Serial.println("gram");
+		calibrate();
+	}
+	Serial.println("range changed");
+}
+float getData() 					{
+	RawValue=scale.read_average(20)/range-CalibratingValue;
+	data=(RawValue/1.769);
+	return data;
+}
+void LeftButton() 					{
+	calibrate();
+}
+void RightButton() 					{
+	changeRange;
+}
+void checkButtons() 				{
+	if (digitalRead(CPLAY_LEFTBUTTON))
+	{
+		LeftButton;
+	}
+	if (digitalRead(CPLAY_RIGHTBUTTON))
+	{
+		RightButton;
+    }
+}
+float getRoundedData() 				{
+	if (getMode) 
+	{
+		return round(getData);
+	}
+	else 
+	{
+		return getData/1000;
+	}
+}
+void printDisplay(float printData) 	{
+	display.setCursor(0,0);
+	display.print(printData);
+}
+bool getMode()						{		
+	if (range=1000) 
+	{
+		return true;
+	}
+	else 
+	{
+		return false;
+	}
+}
+
